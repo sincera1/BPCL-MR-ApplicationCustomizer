@@ -1,21 +1,72 @@
+
 import { Log } from '@microsoft/sp-core-library';
 
 import styles from './BpclMrApplicationCustomizer.module.scss';
 import Logo from './assets/Bpcl-logo.png';
+
 import {
   BaseApplicationCustomizer,
   PlaceholderContent,
   PlaceholderName
 } from '@microsoft/sp-application-base';
 
-const LOG_SOURCE = 'BpclMrApplicationCustomizer';
+const LOG_SOURCE =
+  'BpclMrApplicationCustomizer';
+
+const translations: any = {
+
+  English: {
+
+    home: "HOME",
+    bpmai: "BPMAI",
+    myPortal: "MY PORTAL",
+    forms: "FORMS",
+    refineryVision: "REFINERY VISION",
+    iconnect: "I-CONNECT",
+    erdmp: "ERDMP",
+    zohoRemote: "ZOHO REMOTE",
+    afpm: "AFPM"
+
+  },
+
+  Hindi: {
+
+    home: "होम",
+    bpmai: "बीपीएमएआई",
+    myPortal: "माय पोर्टल",
+    forms: "फॉर्म्स",
+    refineryVision: "रिफाइनरी विज़न",
+    iconnect: "आई-कनेक्ट",
+    erdmp: "ईआरडीएमपी",
+    zohoRemote: "ज़ोहो रिमोट",
+    afpm: "एएफपीएम"
+
+  },
+
+  Marathi: {
+
+    home: "होम",
+    bpmai: "बीपीएमएआई",
+    myPortal: "माय पोर्टल",
+    forms: "फॉर्म्स",
+    refineryVision: "रिफायनरी व्हिजन",
+    iconnect: "आय-कनेक्ट",
+    erdmp: "ईआरडीएमपी",
+    zohoRemote: "झोहो रिमोट",
+    afpm: "एएफपीएम"
+
+  }
+
+};
 
 export default class BpclMrApplicationCustomizerApplicationCustomizer
   extends BaseApplicationCustomizer<{}> {
 
-  private _top: PlaceholderContent | undefined;
+  private _top:
+    PlaceholderContent | undefined;
 
-  public async onInit(): Promise<void> {
+  public async onInit():
+    Promise<void> {
 
     Log.info(
       LOG_SOURCE,
@@ -31,30 +82,56 @@ export default class BpclMrApplicationCustomizerApplicationCustomizer
     this.context.application.navigatedEvent.add(
       this,
       () => {
+
         this._renderBottom();
+
       }
     );
 
     return Promise.resolve();
+
   }
 
-  private _hideAppBar(): void {
+  private _hideAppBar():
+    void {
 
-    const style = document.createElement(
-      'style'
-    );
+    const style =
+      document.createElement(
+        'style'
+      );
 
     style.innerHTML = `
-       #spSiteHeader { display: none !important; }
-      #sp-appBar { display: none !important; }
-      .ms-HorizontalNav { margin-left: 0 !important; }
-      #spCommandBar { display: none !important; }
-      #vpc_Page\\.SiteFooter\\.internal\\.03025612-a400-4804-a78e-e1493200a43b { display: none !important; }
-      #CommentsWrapper { display: none !important; }
-      
+
+      #spSiteHeader {
+        display: none !important;
+      }
+
+      #sp-appBar {
+        display: none !important;
+      }
+
+      .ms-HorizontalNav {
+        margin-left: 0 !important;
+      }
+
+      #spCommandBar {
+        display: none !important;
+      }
+
+      #vpc_Page\\.SiteFooter\\.internal\\.03025612-a400-4804-a78e-e1493200a43b {
+        display: none !important;
+      }
+
+      #CommentsWrapper {
+        display: none !important;
+      }
+
     `;
 
-    document.head.appendChild(style);
+    document.head.appendChild(
+      style
+    );
+
   }
 
   private async _renderTop():
@@ -64,7 +141,8 @@ export default class BpclMrApplicationCustomizerApplicationCustomizer
       return;
 
     this._top =
-      this.context.placeholderProvider
+      this.context
+        .placeholderProvider
         .tryCreateContent(
           PlaceholderName.Top
         );
@@ -75,6 +153,16 @@ export default class BpclMrApplicationCustomizerApplicationCustomizer
     ) {
       return;
     }
+
+    const selectedLanguage =
+      localStorage.getItem(
+        "MRLanguage"
+      ) || "English";
+
+    const t =
+      translations[
+      selectedLanguage
+      ];
 
     this._top.domElement.innerHTML = `
 
@@ -121,47 +209,47 @@ flex-wrap:wrap;
 
 <a href="#"
 class="${styles.navLink}">
-HOME
+${t.home}
 </a>
 
 <a href="#"
 class="${styles.navLink}">
-BPMAI
+${t.bpmai}
 </a>
 
 <a href="#"
 class="${styles.navLink}">
-MY PORTAL
+${t.myPortal}
 </a>
 
 <a href="#"
 class="${styles.navLink}">
-FORMS
+${t.forms}
 </a>
 
 <a href="#"
 class="${styles.navLink}">
-REFINERY VISION
+${t.refineryVision}
 </a>
 
 <a href="#"
 class="${styles.navLink}">
-I-CONNECT
+${t.iconnect}
 </a>
 
 <a href="#"
 class="${styles.navLink}">
-ERDMP
+${t.erdmp}
 </a>
 
 <a href="#"
 class="${styles.navLink}">
-ZOHO REMOTE
+${t.zohoRemote}
 </a>
 
 <a href="#"
 class="${styles.navLink}">
-AFPM
+${t.afpm}
 </a>
 
 </div>
@@ -169,19 +257,35 @@ AFPM
 <div class="${styles.languageWrapper}">
 
 <select
+id="mrLanguageSelector"
 class="${styles.languageSelect}"
 >
 
-<option>
+<option
+value="English"
+${selectedLanguage === "English"
+        ? "selected"
+        : ""}
+>
 English
 </option>
 
-<option>
-Tamil
+<option
+value="Hindi"
+${selectedLanguage === "Hindi"
+        ? "selected"
+        : ""}
+>
+Hindi
 </option>
 
-<option>
-Hindi
+<option
+value="Marathi"
+${selectedLanguage === "Marathi"
+        ? "selected"
+        : ""}
+>
+Marathi
 </option>
 
 </select>
@@ -195,6 +299,37 @@ Hindi
 </div>
 
 `;
+
+    const dropdown =
+      document.getElementById(
+        "mrLanguageSelector"
+      ) as HTMLSelectElement;
+
+    if (dropdown) {
+
+      dropdown.addEventListener(
+        "change",
+        async (e: any) => {
+
+          localStorage.setItem(
+            "MRLanguage",
+            e.target.value
+          );
+
+          if (this._top) {
+
+            this._top.dispose();
+
+            this._top = undefined;
+
+          }
+
+          await this._renderTop();
+
+        }
+      );
+
+    }
 
   }
 
@@ -259,3 +394,4 @@ Bharat Petroleum Corporation Limited
   }
 
 }
+
