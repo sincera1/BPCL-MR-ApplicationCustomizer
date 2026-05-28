@@ -1,0 +1,19 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "22.22.0",
+    "sdksVersions": {},
+    "version": "1.21.1",
+    "libraryName": "bpcl-mr-application-customizer",
+    "libraryId": "55170976-13f7-4531-ac53-4e5c6a4d0172",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "bpcl-mr-application-customizer",
+    "solutionShortDescription": "bpcl-mr-application-customizer description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "extension",
+    "extensionType": "ApplicationCustomizer"
+  }
+}

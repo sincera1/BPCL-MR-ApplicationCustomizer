@@ -1,0 +1,29 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/spfx-serve.schema.json",
+  "port": 4321,
+  "https": true,
+  "serveConfigurations": {
+    "default": {
+      "pageUrl": "https://obolinxtech.sharepoint.com/sites/BPCL-MR/SitePages/Home.aspx",
+      "customActions": {
+        "f93b67bf-7a7b-4103-adba-bff1b61902e6": {
+          "location": "ClientSideExtension.ApplicationCustomizer",
+          "properties": {
+            "testMessage": "Test message"
+          }
+        }
+      }
+    },
+    "bpclMrApplicationCustomizer": {
+      "pageUrl": "https://obolinxtech.sharepoint.com/sites/BPCL-MR/SitePages/Home.aspx",
+      "customActions": {
+        "f93b67bf-7a7b-4103-adba-bff1b61902e6": {
+          "location": "ClientSideExtension.ApplicationCustomizer",
+          "properties": {
+            "testMessage": "Test message"
+          }
+        }
+      }
+    }
+  }
+}
