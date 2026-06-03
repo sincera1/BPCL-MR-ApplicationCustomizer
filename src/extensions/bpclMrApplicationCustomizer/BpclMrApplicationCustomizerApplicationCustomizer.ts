@@ -1,9 +1,6 @@
-
 import { Log } from '@microsoft/sp-core-library';
-
 import styles from './BpclMrApplicationCustomizer.module.scss';
 import Logo from './assets/Bpcl-logo.png';
-
 import {
   BaseApplicationCustomizer,
   PlaceholderContent,
@@ -59,14 +56,14 @@ const translations: any = {
 
 };
 
-export default class BpclMrApplicationCustomizerApplicationCustomizer
-  extends BaseApplicationCustomizer<{}> {
+export default class BpclMrApplicationCustomizerApplicationCustomizer extends BaseApplicationCustomizer<{}> {
+  
 
-  private _top:
-    PlaceholderContent | undefined;
+  private _top:PlaceholderContent | undefined;
+    
 
-  public async onInit():
-    Promise<void> {
+  public async onInit(): Promise<void> {
+   
 
     Log.info(
       LOG_SOURCE,
@@ -134,18 +131,16 @@ export default class BpclMrApplicationCustomizerApplicationCustomizer
 
   }
 
-  private async _renderTop():
-    Promise<void> {
+  private async _renderTop():Promise<void> {
+    
 
-    if (this._top)
-      return;
+     if (document.getElementById('bpcl-custom-navbar')) {
+  return;
+}
 
-    this._top =
-      this.context
-        .placeholderProvider
-        .tryCreateContent(
-          PlaceholderName.Top
-        );
+
+    this._top =this.context.placeholderProvider .tryCreateContent(PlaceholderName.Top );
+      
 
     if (
       !this._top ||
@@ -166,100 +161,52 @@ export default class BpclMrApplicationCustomizerApplicationCustomizer
 
     this._top.domElement.innerHTML = `
 
-<div class="${styles.mainNavbar}">
+<div id="bpcl-custom-navbar" class="${styles.mainNavbar}">
 
-<div class="container-fluid">
+<div class="${styles.navbarContainer}">
 
-<div
-style="
-display:flex;
-align-items:center;
-justify-content:space-between;
-flex-wrap:wrap;
-"
->
+<div class="${styles.logoSection}">
 
-<div
-style="
-display:flex;
-align-items:center;
-"
->
+<img src="${Logo}" alt="BPCL Logo" class="${styles.logoImg}" />
 
-<img
-src="${Logo}"
-alt="BPCL Logo"
-class="${styles.logoImg}"
->
+<span class="${styles.logoText}">MR Connect</span>
 
-<span class="${styles.logoText}">
-MR Connect
-</span>
+</div> 
 
-</div>
+<button
+      id="bpclMenuBtn"
+      class="${styles.menuBtn}"
+      aria-label="Toggle Menu">
+      ☰
+    </button>
 
-<div
-style="
-display:flex;
-align-items:center;
-gap:20px;
-flex-wrap:wrap;
-"
->
+<div id="bpclMenu" class="${styles.navMenu}">
 
-<a href="#"
-class="${styles.navLink}">
-${t.home}
-</a>
+<div class="${styles.navLinks}">
 
-<a href="#"
-class="${styles.navLink}">
-${t.bpmai}
-</a>
+<a href="#" class="${styles.navLink}">${t.home}</a>
 
-<a href="#"
-class="${styles.navLink}">
-${t.myPortal}
-</a>
+<a href="#" class="${styles.navLink}">${t.bpmai}</a>
 
-<a href="#"
-class="${styles.navLink}">
-${t.forms}
-</a>
+<a href="#" class="${styles.navLink}">${t.myPortal}</a>
 
-<a href="#"
-class="${styles.navLink}">
-${t.refineryVision}
-</a>
+<a href="#" class="${styles.navLink}">${t.forms}</a>
 
-<a href="#"
-class="${styles.navLink}">
-${t.iconnect}
-</a>
+<a href="#" class="${styles.navLink}">${t.refineryVision}</a>
 
-<a href="#"
-class="${styles.navLink}">
-${t.erdmp}
-</a>
+<a href="#" class="${styles.navLink}">${t.iconnect}</a>
 
-<a href="#"
-class="${styles.navLink}">
-${t.zohoRemote}
-</a>
+<a href="#" class="${styles.navLink}">${t.erdmp}</a>
 
-<a href="#"
-class="${styles.navLink}">
-${t.afpm}
-</a>
+<a href="#" class="${styles.navLink}">${t.zohoRemote}</a>
+
+<a href="#" class="${styles.navLink}">${t.afpm}</a>
 
 </div>
 
 <div class="${styles.languageWrapper}">
 
-<select
-id="mrLanguageSelector"
-class="${styles.languageSelect}"
->
+<select id="mrLanguageSelector" class="${styles.languageSelect}">
 
 <option
 value="English"
@@ -300,6 +247,39 @@ Marathi
 
 `;
 
+setTimeout(() => {
+ 
+  const menuBtn =
+    document.getElementById('bpclMenuBtn');
+ 
+  const menu =
+    document.getElementById('bpclMenu');
+ 
+  if (menuBtn && menu) {
+ 
+    menuBtn.addEventListener('click', () => {
+ 
+      const isOpen =
+        menu.classList.contains('bpcl-mobile-open');
+ 
+      if (isOpen) {
+ 
+        menu.classList.remove('bpcl-mobile-open');
+        menuBtn.textContent = '☰';
+ 
+      } else {
+ 
+        menu.classList.add('bpcl-mobile-open');
+        menuBtn.textContent = '✕';
+ 
+      }
+ 
+    });
+ 
+  }
+ 
+}, 300);
+
     const dropdown =
       document.getElementById(
         "mrLanguageSelector"
@@ -325,6 +305,12 @@ Marathi
           }
 
           await this._renderTop();
+
+          window.dispatchEvent(
+            new CustomEvent(
+              "languageChanged"
+            )
+          );
 
         }
       );

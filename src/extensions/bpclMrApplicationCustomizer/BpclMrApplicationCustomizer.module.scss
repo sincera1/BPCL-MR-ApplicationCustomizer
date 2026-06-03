@@ -1,7 +1,7 @@
-/* ===================================
-   GLOBAL
-=================================== */
-
+:global(*) {
+  box-sizing: border-box;
+}
+ 
 :global(body),
 :global(.SPPageChrome) {
   font-family: 'Inter', system-ui,
@@ -13,7 +13,7 @@
     Arial,
     sans-serif;
 }
-
+ 
 :global {
   --bs-font-sans-serif:
     'Inter',
@@ -26,9 +26,9 @@
     Arial,
     sans-serif;
 }
-
+ 
 /* SharePoint Full Width Fix */
-
+ 
 :global(.CanvasZoneSectionContainer),
 :global(#workbenchPageContent),
 :global(.CanvasZone),
@@ -37,311 +37,224 @@
 :global(.Canvas),
 :global(.SPPageChrome),
 :global(#CanvasZone-SectionContainer) {
-
   max-width: 100% !important;
   width: 100% !important;
-
   margin: 0 !important;
   padding: 0 !important;
-
   background: #ffffff !important;
 }
-
-/* ===================================
+/* =====================================
    NAVBAR
-=================================== */
-
+===================================== */
 .mainNavbar {
-  background-color: #FCDB00 !important;
-
-  padding: 10px 20px;
-
-  z-index: 999;
-
+  background: #fcdb00;
+  position: sticky;
+  top: 0;
+  z-index: 999999;
   width: 100%;
+  box-shadow: 0 2px 8px rgba(0,0,0,.1);
 }
-
-/* Logo */
-
+ 
+.navbarContainer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 25px;
+  gap: 20px;
+}
+ 
+.logoSection {
+  display: flex;
+  align-items: center;
+}
+ 
 .logoImg {
   width: 45px;
-
   height: 45px;
-
-  object-fit: contain;
 }
-
+ 
 .logoText {
-  color: #000;
-
-  font-size: 21px;
-
+  margin-left: 10px;
+  font-size: 22px;
   font-weight: 700;
-
-  margin-left: 5px;
-}
-
-/* Navigation */
-
-.navLink {
-  color: #000 !important;
-
-  font-size: 13px !important;
-
-  font-weight: 600 !important;
-
-  margin: 0 8px;
-
-  transition: 0.3s ease;
-}
-
-.navLink:hover {
-  color: #333 !important;
-}
-
-/* Dropdown */
-
-.dropdownText {
-
-  font-size: 13px !important;
-
-  font-weight: 600;
-}
-
-.dropdownText a {
-  color: #000 !important;
-}
-
-/* Language */
-
-.languageWrapper {
-  min-width: 140px;
-}
-
-.languageSelect {
-
-  border-radius: 30px !important;
-
-  border: 1px solid #000 !important;
-
-  font-size: 13px !important;
-
-  font-weight: 600 !important;
-
-  background: #fff;
-
   color: #000;
 }
-
-/* Bootstrap Toggle */
-
-:global(.navbar-toggler) {
-  border: none !important;
-
-  box-shadow: none !important;
+ 
+/* DESKTOP MENU */
+ 
+.navMenu {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  flex: 1;
+  width: 100%;
 }
-
-:global(.navbar-toggler:focus) {
-  box-shadow: none !important;
+ 
+.navLinks {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
 }
-
-/* ===================================
-   TABLET
-=================================== */
-
-@media (max-width:1199px) {
-
-  .mainNavbar {
-    padding: 10px 15px;
-  }
-
-  .navLink {
-
-    font-size: 12px !important;
-
-    margin: 0 5px;
-  }
-
-  .dropdownText {
-    font-size: 12px !important;
-  }
-
-  .logoText {
-    font-size: 18px;
-  }
-
-  .languageWrapper {
-    min-width: 110px;
-  }
-
-  .languageSelect {
-
-    width: 110px;
-
-    font-size: 12px !important;
-  }
-
+ 
+.languageWrapper {
+  justify-self: end;
+  margin-left: 20px;
 }
-
-/* ===================================
-   MOBILE
-=================================== */
-
-@media (max-width:991px) {
-
-  :global(.navbar-collapse) {
-
-    background: #FCDB00;
-
-    padding: 15px;
-
-    margin-top: 10px;
-
-    border-radius: 10px;
+ 
+ 
+.navLink {
+  text-decoration: none !important;
+  color: #000 !important;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+ 
+.navLink:hover {
+  color: #444 !important;
+}
+ 
+.languageWrapper {
+  margin-left: 20px;
+}
+ 
+.languageSelect {
+  height: 40px;
+  min-width: 150px;
+  border-radius: 25px;
+  border: 1px solid #000;
+  padding: 0 40px 0 15px;
+  font-size: 13px;
+  font-weight: 600;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cpath fill='%23000' d='M5.5 7.5L10 12l4.5-4.5z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 15px center !important;
+  background-size: 20px !important;
+}
+ 
+.menuBtn {
+  display: none;
+}
+ 
+/* ===========================
+   MOBILE + TABLET
+=========================== */
+ 
+@media (max-width: 991px) {
+ 
+  .navbarContainer {
+    flex-wrap: wrap;
+    position: relative;
   }
-
-  :global(.navbar-nav) {
-    width: 100%;
-  }
-
-  .navLink {
-
+ 
+  .menuBtn {
     display: block;
-
-    width: 100%;
-
-    text-align: center;
-
-    margin: 8px 0;
-
-    padding: 10px 0;
-
-    border-bottom:
-      1px solid rgba(0,0,0,0.1);
-  }
-
-  :global(.dropdown-menu) {
-
-    text-align: center;
-
+    margin-left: auto;
+    font-size: 32px;
     border: none;
-
-    background: #fff7b3;
+    background: transparent;
+    cursor: pointer;
+    z-index: 9999;
   }
-
-  .languageWrapper {
-
+ 
+  .navMenu {
+    display: none;
     width: 100%;
-
-    margin-top: 15px;
+    flex-basis: 100%;
+    margin-top: 10px;
+     flex-direction: column !important;
+    align-items: stretch !important;
   }
-
+ 
+  :global(.bpcl-mobile-open) {
+    display: block !important;
+    width: 100%;
+  }
+ 
+  .navLinks {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0;
+  }
+ 
+  .navLink {
+    width: 100%;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(0,0,0,.1);
+  }
+ 
+  .languageWrapper {
+    width: 100%;
+    margin: 15px 0 0 0;
+  }
+ 
   .languageSelect {
     width: 100%;
   }
-
-  .logoText {
-    font-size: 20px;
-  }
-
+ 
 }
-
-/* ===================================
-   SMALL MOBILE
-=================================== */
-
-@media (max-width:575px) {
-
-  .logoImg {
-
-    width: 38px;
-
-    height: 38px;
-  }
-
-  .logoText {
-    font-size: 18px;
-  }
-
-}
-
+ 
 /* ===================================
    FOOTER
 =================================== */
-
+ 
 .footerSection {
-
   background: #d0a100;
-
   padding: 14px 20px;
-
   margin-top: 40px;
-
   width: 100%;
 }
-
+ 
 .footerContent {
-
   display: flex;
-
   justify-content: space-between;
-
   align-items: center;
-
   flex-wrap: wrap;
 }
-
+ 
 .footerLeft {
-
   color: white;
-
   font-size: 14px;
-
   font-weight: 500;
 }
-
+ 
 .footerRight {
-
   display: flex;
-
   gap: 18px;
-
   flex-wrap: wrap;
 }
-
+ 
 .footerRight a {
-
   color: white;
-
   text-decoration: none;
-
   font-size: 14px !important;
-
   transition: .3s ease;
 }
-
+ 
 .footerRight a:hover {
   text-decoration: underline;
 }
-
+ 
 /* Footer Mobile */
-
+ 
 @media (max-width:768px) {
-
+ 
   .footerContent {
-
     flex-direction: column;
-
     text-align: center;
-
     gap: 10px;
   }
-
+ 
   .footerRight {
-
     justify-content: center;
-
     gap: 12px;
   }
-
+ 
 }
