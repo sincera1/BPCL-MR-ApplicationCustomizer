@@ -7,70 +7,40 @@ import {
   PlaceholderName
 } from '@microsoft/sp-application-base';
 
+import { spfi, SPFI } from "@pnp/sp";
+import { SPFx } from "@pnp/sp/presets/all";
+
+import "@pnp/sp/webs";
+import "@pnp/sp/lists";
+import "@pnp/sp/items";
+
+import Services, { IMenuItem } from './Services';
+
 const LOG_SOURCE =
   'BpclMrApplicationCustomizer';
 
-const translations: any = {
 
-  English: {
-
-    home: "HOME",
-    bpmai: "BPMAI",
-    myPortal: "MY PORTAL",
-    forms: "FORMS",
-    refineryVision: "REFINERY VISION",
-    iconnect: "I-CONNECT",
-    erdmp: "ERDMP",
-    zohoRemote: "ZOHO REMOTE",
-    afpm: "AFPM"
-
-  },
-
-  Hindi: {
-
-    home: "होम",
-    bpmai: "बीपीएमएआई",
-    myPortal: "माय पोर्टल",
-    forms: "फॉर्म्स",
-    refineryVision: "रिफाइनरी विज़न",
-    iconnect: "आई-कनेक्ट",
-    erdmp: "ईआरडीएमपी",
-    zohoRemote: "ज़ोहो रिमोट",
-    afpm: "एएफपीएम"
-
-  },
-
-  Marathi: {
-
-    home: "होम",
-    bpmai: "बीपीएमएआई",
-    myPortal: "माय पोर्टल",
-    forms: "फॉर्म्स",
-    refineryVision: "रिफायनरी व्हिजन",
-    iconnect: "आय-कनेक्ट",
-    erdmp: "ईआरडीएमपी",
-    zohoRemote: "झोहो रिमोट",
-    afpm: "एएफपीएम"
-
-  }
-
-};
 
 export default class BpclMrApplicationCustomizerApplicationCustomizer extends BaseApplicationCustomizer<{}> {
-  
 
-  private _top:PlaceholderContent | undefined;
-    
+
+  private _top: PlaceholderContent | undefined;
+  private _sp!: SPFI;
+private _service!: Services;
+  private _menuItems: IMenuItem[] = [];
 
   public async onInit(): Promise<void> {
-   
 
-    Log.info(
-      LOG_SOURCE,
-      'Initialized'
-    );
 
+    Log.info(LOG_SOURCE, 'Initialized');
     this._hideAppBar();
+    this._sp = spfi().using(SPFx(this.context));
+
+    // Create Service
+    this._service = new Services(this._sp);
+
+    // Load Menu from SharePoint
+    this._menuItems = await this._service.getMasterMenu();
 
     await this._renderTop();
 
@@ -131,16 +101,16 @@ export default class BpclMrApplicationCustomizerApplicationCustomizer extends Ba
 
   }
 
-  private async _renderTop():Promise<void> {
-    
-
-     if (document.getElementById('bpcl-custom-navbar')) {
-  return;
-}
+  private async _renderTop(): Promise<void> {
 
 
-    this._top =this.context.placeholderProvider .tryCreateContent(PlaceholderName.Top );
-      
+    if (document.getElementById('bpcl-custom-navbar')) {
+      return;
+    }
+
+
+    this._top = this.context.placeholderProvider.tryCreateContent(PlaceholderName.Top);
+
 
     if (
       !this._top ||
@@ -150,14 +120,33 @@ export default class BpclMrApplicationCustomizerApplicationCustomizer extends Ba
     }
 
     const selectedLanguage =
-      localStorage.getItem(
-        "MRLanguage"
-      ) || "English";
+      localStorage.getItem("MRLanguage") || "English";
 
-    const t =
-      translations[
-      selectedLanguage
-      ];
+    let menuHtml = "";
+
+    this._menuItems.forEach((item: IMenuItem) => {
+
+      let title = item.LinkTitle;
+
+      if (selectedLanguage === "Hindi") {
+        title = item.TitleHindi;
+      }
+      else if (selectedLanguage === "Marathi") {
+        title = item.TitleMarathi;
+      }
+
+      // Handle Hyperlink column
+      const url =
+        item.RedirectURL && typeof item.RedirectURL === "object"
+          ? item.RedirectURL.Url
+          : (item.RedirectURL );
+
+      menuHtml += `
+    <a href="${url}" class="${styles.navLink}">
+      ${title}
+    </a>
+  `;
+    });
 
     this._top.domElement.innerHTML = `
 
@@ -183,25 +172,7 @@ export default class BpclMrApplicationCustomizerApplicationCustomizer extends Ba
 <div id="bpclMenu" class="${styles.navMenu}">
 
 <div class="${styles.navLinks}">
-
-<a href="#" class="${styles.navLink}">${t.home}</a>
-
-<a href="#" class="${styles.navLink}">${t.bpmai}</a>
-
-<a href="#" class="${styles.navLink}">${t.myPortal}</a>
-
-<a href="#" class="${styles.navLink}">${t.forms}</a>
-
-<a href="#" class="${styles.navLink}">${t.refineryVision}</a>
-
-<a href="#" class="${styles.navLink}">${t.iconnect}</a>
-
-<a href="#" class="${styles.navLink}">${t.erdmp}</a>
-
-<a href="#" class="${styles.navLink}">${t.zohoRemote}</a>
-
-<a href="#" class="${styles.navLink}">${t.afpm}</a>
-
+  ${menuHtml}
 </div>
 
 <div class="${styles.languageWrapper}">
@@ -247,38 +218,38 @@ Marathi
 
 `;
 
-setTimeout(() => {
- 
-  const menuBtn =
-    document.getElementById('bpclMenuBtn');
- 
-  const menu =
-    document.getElementById('bpclMenu');
- 
-  if (menuBtn && menu) {
- 
-    menuBtn.addEventListener('click', () => {
- 
-      const isOpen =
-        menu.classList.contains('bpcl-mobile-open');
- 
-      if (isOpen) {
- 
-        menu.classList.remove('bpcl-mobile-open');
-        menuBtn.textContent = '☰';
- 
-      } else {
- 
-        menu.classList.add('bpcl-mobile-open');
-        menuBtn.textContent = '✕';
- 
+    setTimeout(() => {
+
+      const menuBtn =
+        document.getElementById('bpclMenuBtn');
+
+      const menu =
+        document.getElementById('bpclMenu');
+
+      if (menuBtn && menu) {
+
+        menuBtn.addEventListener('click', () => {
+
+          const isOpen =
+            menu.classList.contains('bpcl-mobile-open');
+
+          if (isOpen) {
+
+            menu.classList.remove('bpcl-mobile-open');
+            menuBtn.textContent = '☰';
+
+          } else {
+
+            menu.classList.add('bpcl-mobile-open');
+            menuBtn.textContent = '✕';
+
+          }
+
+        });
+
       }
- 
-    });
- 
-  }
- 
-}, 300);
+
+    }, 300);
 
     const dropdown =
       document.getElementById(
@@ -289,11 +260,13 @@ setTimeout(() => {
 
       dropdown.addEventListener(
         "change",
-        async (e: any) => {
+        async (e: Event) => {
+
+           const selectedValue = (e.target as HTMLSelectElement).value;
 
           localStorage.setItem(
             "MRLanguage",
-            e.target.value
+            selectedValue
           );
 
           if (this._top) {

@@ -50,7 +50,7 @@
   background: #fcdb00;
   position: sticky;
   top: 0;
-  z-index: 999999;
+  //z-index: 999999;
   width: 100%;
   box-shadow: 0 2px 8px rgba(0,0,0,.1);
 }
@@ -70,13 +70,13 @@
 }
  
 .logoImg {
-  width: 45px;
-  height: 45px;
+  width: 35px;
+  height: 40px;
 }
  
 .logoText {
   margin-left: 10px;
-  font-size: 22px;
+  font-size: clamp(16px, 2vw, 18px);
   font-weight: 700;
   color: #000;
 }
@@ -107,7 +107,7 @@
 .navLink {
   text-decoration: none !important;
   color: #000 !important;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -122,11 +122,11 @@
  
 .languageSelect {
   height: 40px;
-  min-width: 150px;
+  min-width: 125px;
   border-radius: 25px;
   border: 1px solid #000;
   padding: 0 40px 0 15px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   appearance: none;
   -webkit-appearance: none;
@@ -208,7 +208,7 @@
 .footerSection {
   background: #d0a100;
   padding: 14px 20px;
-  margin-top: 40px;
+  margin-top: 15px;
   width: 100%;
 }
  
