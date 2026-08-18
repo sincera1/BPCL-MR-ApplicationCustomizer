@@ -102,8 +102,18 @@
 .languageWrapper {
   justify-self: end;
   margin-left: 20px;
+  display: flex;
 }
 
+.timestamp {
+  padding-top: 10px;
+  margin-bottom: 0px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #000;
+  margin-right: 10px;
+
+}
 
 .navLink {
   text-decoration: none !important;
@@ -117,9 +127,9 @@
   color: #444 !important;
 }
 
-.languageWrapper {
-  margin-left: 20px;
-}
+// .languageWrapper {
+//   margin-left: 20px;
+// }
 
 .languageSelect {
   height: 40px;
@@ -194,10 +204,12 @@
   .languageWrapper {
     width: 100%;
     margin: 15px 0 0 0;
+    display: block;
   }
 
   .languageSelect {
     width: 100%;
+    margin-top: 12px;
   }
 
 }

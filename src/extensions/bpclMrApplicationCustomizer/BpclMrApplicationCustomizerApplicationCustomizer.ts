@@ -26,8 +26,9 @@ export default class BpclMrApplicationCustomizerApplicationCustomizer extends Ba
 
   private _top: PlaceholderContent | undefined;
   private _sp!: SPFI;
-private _service!: Services;
+  private _service!: Services;
   private _menuItems: IMenuItem[] = [];
+  private _clockInterval: number | undefined;
 
   public async onInit(): Promise<void> {
 
@@ -43,6 +44,7 @@ private _service!: Services;
     this._menuItems = await this._service.getMasterMenu();
 
     await this._renderTop();
+    this._startDateTimeClock();
 
     this._renderBottom();
 
@@ -58,6 +60,52 @@ private _service!: Services;
     return Promise.resolve();
 
   }
+
+  private _getCurrentDateTime(): string {
+    const now = new Date();
+
+    const day = String(now.getDate()).padStart(2, '0');
+
+    const monthNames = [
+      'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
+      'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'
+    ];
+
+    const month = monthNames[now.getMonth()];
+    const year = now.getFullYear();
+
+    let hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+
+    const formattedHours = String(hours).padStart(2, '0');
+
+    return `${day} ${month} ${year} ${formattedHours}:${minutes}:${seconds} ${ampm}`;
+  }
+
+  private _startDateTimeClock(): void {
+
+  if (this._clockInterval) {
+    window.clearInterval(this._clockInterval);
+  }
+
+  this._clockInterval = window.setInterval(() => {
+
+    const dateTimeElement =
+      document.getElementById('mrCurrentDateTime');
+
+    if (dateTimeElement) {
+      dateTimeElement.textContent =
+        this._getCurrentDateTime();
+    }
+
+  }, 1000);
+}
 
   private _hideAppBar():
     void {
@@ -139,7 +187,7 @@ private _service!: Services;
       const url =
         item.RedirectURL && typeof item.RedirectURL === "object"
           ? item.RedirectURL.Url
-          : (item.RedirectURL );
+          : (item.RedirectURL);
 
       menuHtml += `
     <a href="${url}" class="${styles.navLink}">
@@ -175,8 +223,10 @@ private _service!: Services;
   ${menuHtml}
 </div>
 
+
 <div class="${styles.languageWrapper}">
 
+<span  id="mrCurrentDateTime" class="${styles.timestamp}">${this._getCurrentDateTime()}</span>
 <select id="mrLanguageSelector" class="${styles.languageSelect}">
 
 <option
@@ -262,7 +312,7 @@ Marathi
         "change",
         async (e: Event) => {
 
-           const selectedValue = (e.target as HTMLSelectElement).value;
+          const selectedValue = (e.target as HTMLSelectElement).value;
 
           localStorage.setItem(
             "MRLanguage",
