@@ -1,6 +1,7 @@
 import { Log } from '@microsoft/sp-core-library';
 import styles from './BpclMrApplicationCustomizer.module.scss';
-import Logo from './assets/Bpcl-logo.png';
+import Logo from './assets/MRIonnectlogo.png';
+
 import {
   BaseApplicationCustomizer,
   PlaceholderContent,
@@ -204,9 +205,8 @@ export default class BpclMrApplicationCustomizerApplicationCustomizer extends Ba
 
 <div class="${styles.logoSection}">
 
-<img src="${Logo}" alt="BPCL Logo" class="${styles.logoImg}" />
+<img src="${Logo}" alt="MRIonnect Logo" class="${styles.logoImg}" />
 
-<span class="${styles.logoText}">MR Connect</span>
 
 </div> 
 

@@ -4,27 +4,22 @@
 
 :global(body),
 :global(.SPPageChrome) {
-  font-family: 'Inter', system-ui,
+  font-family:
+    "Inter",
+    system-ui,
     -apple-system,
     BlinkMacSystemFont,
-    'Segoe UI',
+    "Segoe UI",
     Roboto,
-    'Helvetica Neue',
+    "Helvetica Neue",
     Arial,
     sans-serif;
 }
 
 :global {
   --bs-font-sans-serif:
-    'Inter',
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
+    "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
 }
 
 /* SharePoint Full Width Fix */
@@ -48,12 +43,21 @@
    NAVBAR
 ===================================== */
 .mainNavbar {
-  background: #fcdb00;
+  // background: #fcdb00;
+  background: #fff;
   position: sticky;
   top: 0;
-  //z-index: 999999;
-  width: 100%;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
+  z-index: 999999;
+  // width: 100%;
+  // box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
+
+  // align-items: center;
+  // background: #fff;
+  // display: flex;
+  // height: 41px;
+  // justify-content: space-between;
+  // padding: 0 12px 0 42px;
+  // position: relative;
 }
 
 .navbarContainer {
@@ -61,8 +65,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 25px;
+  // padding: 10px 25px;
+  padding: 0 12px 0 42px;
   gap: 20px;
+  height: 41px;
 }
 
 .logoSection {
@@ -71,8 +77,8 @@
 }
 
 .logoImg {
-  width: 35px;
-  height: 40px;
+  width: 170px;
+  height: 36px;
 }
 
 .logoText {
@@ -97,6 +103,13 @@
   justify-content: center;
   align-items: center;
   gap: 16px;
+
+  color: #032492 !important;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none !important;
+  text-transform: uppercase !important;
+  white-space: nowrap;
 }
 
 .languageWrapper {
@@ -106,25 +119,28 @@
 }
 
 .timestamp {
-  padding-top: 10px;
+  padding-top: 6px;
   margin-bottom: 0px;
   font-size: 12px;
   font-weight: 600;
-  color: #000;
+  color: #032492;
   margin-right: 10px;
-
 }
 
 .navLink {
   text-decoration: none !important;
-  color: #000 !important;
-  font-size: 12px;
+  // color: #000 !important;
+  color: #032492;
+  // font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
+  text-transform: lowercase;
+  text-transform: capitalize !important;
 }
 
 .navLink:hover {
-  color: #444 !important;
+  color: #dba300 !important;
 }
 
 // .languageWrapper {
@@ -132,10 +148,13 @@
 // }
 
 .languageSelect {
-  height: 40px;
-  min-width: 125px;
+  // height: 40px;
+  height: 30px;
+  // min-width: 125px;
+  min-width: 100px;
   border-radius: 25px;
   border: 1px solid #000;
+  // color: #032492;
   padding: 0 40px 0 15px;
   font-size: 12px;
   font-weight: 600;
@@ -158,7 +177,6 @@
 =========================== */
 
 @media (max-width: 991px) {
-
   .navbarContainer {
     flex-wrap: wrap;
     position: relative;
@@ -198,7 +216,7 @@
   .navLink {
     width: 100%;
     padding: 14px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, .1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   }
 
   .languageWrapper {
@@ -211,7 +229,6 @@
     width: 100%;
     margin-top: 12px;
   }
-
 }
 
 /* ===================================
@@ -248,7 +265,7 @@
   color: white;
   text-decoration: none;
   font-size: 14px !important;
-  transition: .3s ease;
+  transition: 0.3s ease;
 }
 
 .footerRight a:hover {
@@ -257,8 +274,7 @@
 
 /* Footer Mobile */
 
-@media (max-width:768px) {
-
+@media (max-width: 768px) {
   .footerContent {
     flex-direction: column;
     text-align: center;
@@ -269,7 +285,6 @@
     justify-content: center;
     gap: 12px;
   }
-
 }
 
 :global {
@@ -277,4 +292,100 @@
     border-radius: 0 !important;
     margin: 0 !important;
   }
+}
+
+/***** new css 22/101/2026 *****/
+.menuItem {
+  position: relative;
+  padding: 6px 12px;
+  color: #fff;
+  cursor: pointer;
+}
+.menuItem:nth-last-child(-n + 3) {
+  .submenu {
+    left: auto;
+    right: 0;
+  }
+}
+.menuItem.dropdown:hover > .link > .dropdownIcon {
+  transform: rotate(180deg) !important;
+}
+@media (max-width: 1366px) {
+  .menuItem {
+    padding: 6px 6x;
+    font-size: 13px;
+  }
+}
+@media (max-width: 1024px) {
+  .menuItem {
+    padding: 6px 12px;
+    position: relative;
+  }
+}
+.submenuItem {
+  padding: 0;
+  position: relative;
+}
+
+.submenuLink {
+  display: flex;
+  padding: 8px 24px;
+  white-space: nowrap;
+  color: #032492;
+  text-decoration: none;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.submenuLink i {
+  margin-left: 10px;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.submenu li:hover > .submenuLink {
+  background: #032492;
+  border-left: 4px solid #dba300;
+  color: #fff;
+  cursor: pointer;
+}
+
+/***** End new css 22/101/2026 *****/
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdownMenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 180px;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10000;
+}
+
+.dropdown:hover .dropdownMenu {
+  display: block;
+}
+
+.dropdownItem {
+  display: block;
+  text-decoration: none;
+  white-space: nowrap;
+
+  color: #032492;
+  display: flex;
+  padding: 8px 24px;
+}
+
+.dropdownItem:hover {
+  background: #032492;
+  border-left: 4px solid #dba300;
+  color: #fff;
+  cursor: pointer;
 }
