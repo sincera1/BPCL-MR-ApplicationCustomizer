@@ -14,6 +14,10 @@ export interface IMenuItem {
     };
     Sequence: number;
     IsActive: boolean;
+    ParentMenu?: {
+        Id: number;
+        Title: string;
+    } | null;
 }
 
 export default class Services {
@@ -36,8 +40,12 @@ export default class Services {
                 "TitleMarathi",
                 "RedirectURL",
                 "Sequence",
-                "IsActive"
+                "IsActive",
+                "ParentMenu/Id",
+                "ParentMenu/Title"
             )
+            .expand("ParentMenu")
+            .top(500)
             .filter("IsActive eq 1")
             .orderBy("Sequence", true)();
 

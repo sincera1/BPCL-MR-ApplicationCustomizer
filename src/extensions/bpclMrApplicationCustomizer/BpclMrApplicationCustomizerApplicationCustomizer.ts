@@ -1,3 +1,4 @@
+
 import { Log } from '@microsoft/sp-core-library';
 import styles from './BpclMrApplicationCustomizer.module.scss';
 import Logo from './assets/MRIonnectlogo.png';
@@ -17,13 +18,10 @@ import "@pnp/sp/items";
 
 import Services, { IMenuItem } from './Services';
 
-const LOG_SOURCE =
-  'BpclMrApplicationCustomizer';
+const LOG_SOURCE = 'BpclMrApplicationCustomizer';
 
-
-
-export default class BpclMrApplicationCustomizerApplicationCustomizer extends BaseApplicationCustomizer<{}> {
-
+export default class BpclMrApplicationCustomizerApplicationCustomizer
+  extends BaseApplicationCustomizer<{}> {
 
   private _top: PlaceholderContent | undefined;
   private _sp!: SPFI;
@@ -33,18 +31,18 @@ export default class BpclMrApplicationCustomizerApplicationCustomizer extends Ba
 
   public async onInit(): Promise<void> {
 
-
     Log.info(LOG_SOURCE, 'Initialized');
+
     this._hideAppBar();
+
     this._sp = spfi().using(SPFx(this.context));
 
-    // Create Service
     this._service = new Services(this._sp);
 
-    // Load Menu from SharePoint
     this._menuItems = await this._service.getMasterMenu();
 
     await this._renderTop();
+
     this._startDateTimeClock();
 
     this._renderBottom();
@@ -52,17 +50,15 @@ export default class BpclMrApplicationCustomizerApplicationCustomizer extends Ba
     this.context.application.navigatedEvent.add(
       this,
       () => {
-
         this._renderBottom();
-
       }
     );
 
     return Promise.resolve();
-
   }
 
   private _getCurrentDateTime(): string {
+
     const now = new Date();
 
     const day = String(now.getDate()).padStart(2, '0');
@@ -76,6 +72,7 @@ export default class BpclMrApplicationCustomizerApplicationCustomizer extends Ba
     const year = now.getFullYear();
 
     let hours = now.getHours();
+
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
 
@@ -91,33 +88,28 @@ export default class BpclMrApplicationCustomizerApplicationCustomizer extends Ba
 
   private _startDateTimeClock(): void {
 
-  if (this._clockInterval) {
-    window.clearInterval(this._clockInterval);
-  }
-
-  this._clockInterval = window.setInterval(() => {
-
-    const dateTimeElement =
-      document.getElementById('mrCurrentDateTime');
-
-    if (dateTimeElement) {
-      dateTimeElement.textContent =
-        this._getCurrentDateTime();
+    if (this._clockInterval !== undefined) {
+      window.clearInterval(this._clockInterval);
     }
 
-  }, 1000);
-}
+    this._clockInterval = window.setInterval(() => {
 
-  private _hideAppBar():
-    void {
+      const dateTimeElement =
+        document.getElementById('mrCurrentDateTime');
 
-    const style =
-      document.createElement(
-        'style'
-      );
+      if (dateTimeElement) {
+        dateTimeElement.textContent =
+          this._getCurrentDateTime();
+      }
+
+    }, 1000);
+  }
+
+  private _hideAppBar(): void {
+
+    const style = document.createElement('style');
 
     style.innerHTML = `
-
       #spSiteHeader {
         display: none !important;
       }
@@ -141,266 +133,315 @@ export default class BpclMrApplicationCustomizerApplicationCustomizer extends Ba
       #CommentsWrapper {
         display: none !important;
       }
-
     `;
 
-    document.head.appendChild(
-      style
+    document.head.appendChild(style);
+  }
+
+  
+private async _renderTop(): Promise<void> {
+
+  if (document.getElementById('bpcl-custom-navbar')) {
+    return;
+  }
+
+  this._top =
+    this.context.placeholderProvider.tryCreateContent(
+      PlaceholderName.Top
     );
 
+  if (!this._top || !this._top.domElement) {
+    return;
   }
 
-  private async _renderTop(): Promise<void> {
+  const selectedLanguage =
+    localStorage.getItem('MRLanguage') || 'English';
 
+  // Get the appropriate menu title for the selected language.
+  const getMenuTitle = (item: IMenuItem): string => {
 
-    if (document.getElementById('bpcl-custom-navbar')) {
-      return;
+    if (selectedLanguage === 'Hindi') {
+      return item.TitleHindi || item.LinkTitle || '';
     }
 
-
-    this._top = this.context.placeholderProvider.tryCreateContent(PlaceholderName.Top);
-
-
-    if (
-      !this._top ||
-      !this._top.domElement
-    ) {
-      return;
+    if (selectedLanguage === 'Marathi') {
+      return item.TitleMarathi || item.LinkTitle || '';
     }
 
-    const selectedLanguage =
-      localStorage.getItem("MRLanguage") || "English";
+    return item.LinkTitle || '';
+  };
 
-    let menuHtml = "";
+  // Escape dynamic values before inserting them into HTML.
+  const escapeHtml = (value: string): string => {
 
-    this._menuItems.forEach((item: IMenuItem) => {
+    return value.replace(/[&<>"']/g, (char: string) => {
 
-      let title = item.LinkTitle;
+      const entities: { [key: string]: string } = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      };
 
-      if (selectedLanguage === "Hindi") {
-        title = item.TitleHindi;
-      }
-      else if (selectedLanguage === "Marathi") {
-        title = item.TitleMarathi;
-      }
-
-      // Handle Hyperlink column
-      const url =
-        item.RedirectURL && typeof item.RedirectURL === "object"
-          ? item.RedirectURL.Url
-          : (item.RedirectURL);
-
-      menuHtml += `
-    <a href="${url}" class="${styles.navLink}">
-      ${title}
-    </a>
-  `;
+      return entities[char];
     });
+  };
 
-    this._top.domElement.innerHTML = `
+  // Resolve SharePoint Hyperlink column values.
+  const getMenuUrl = (item: IMenuItem): string => {
 
-<div id="bpcl-custom-navbar" class="${styles.mainNavbar}">
+    const redirectUrl = item.RedirectURL;
 
-<div class="${styles.navbarContainer}">
-
-<div class="${styles.logoSection}">
-
-<img src="${Logo}" alt="MRIonnect Logo" class="${styles.logoImg}" />
-
-
-</div> 
-
-<button
-      id="bpclMenuBtn"
-      class="${styles.menuBtn}"
-      aria-label="Toggle Menu">
-      ☰
-    </button>
-
-<div id="bpclMenu" class="${styles.navMenu}">
-
-<div class="${styles.navLinks}">
-  ${menuHtml}
-</div>
-
-
-<div class="${styles.languageWrapper}">
-
-<span  id="mrCurrentDateTime" class="${styles.timestamp}">${this._getCurrentDateTime()}</span>
-<select id="mrLanguageSelector" class="${styles.languageSelect}">
-
-<option
-value="English"
-${selectedLanguage === "English"
-        ? "selected"
-        : ""}
->
-English
-</option>
-
-<option
-value="Hindi"
-${selectedLanguage === "Hindi"
-        ? "selected"
-        : ""}
->
-Hindi
-</option>
-
-<option
-value="Marathi"
-${selectedLanguage === "Marathi"
-        ? "selected"
-        : ""}
->
-Marathi
-</option>
-
-</select>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-`;
-
-    setTimeout(() => {
-
-      const menuBtn =
-        document.getElementById('bpclMenuBtn');
-
-      const menu =
-        document.getElementById('bpclMenu');
-
-      if (menuBtn && menu) {
-
-        menuBtn.addEventListener('click', () => {
-
-          const isOpen =
-            menu.classList.contains('bpcl-mobile-open');
-
-          if (isOpen) {
-
-            menu.classList.remove('bpcl-mobile-open');
-            menuBtn.textContent = '☰';
-
-          } else {
-
-            menu.classList.add('bpcl-mobile-open');
-            menuBtn.textContent = '✕';
-
-          }
-
-        });
-
-      }
-
-    }, 300);
-
-    const dropdown =
-      document.getElementById(
-        "mrLanguageSelector"
-      ) as HTMLSelectElement;
-
-    if (dropdown) {
-
-      dropdown.addEventListener(
-        "change",
-        async (e: Event) => {
-
-          const selectedValue = (e.target as HTMLSelectElement).value;
-
-          localStorage.setItem(
-            "MRLanguage",
-            selectedValue
-          );
-
-          if (this._top) {
-
-            this._top.dispose();
-
-            this._top = undefined;
-
-          }
-
-          await this._renderTop();
-
-          window.dispatchEvent(
-            new CustomEvent(
-              "languageChanged"
-            )
-          );
-
-        }
-      );
-
+    if (redirectUrl && typeof redirectUrl === 'object') {
+      return redirectUrl.Url || '#';
     }
 
+    return (redirectUrl as unknown as string) || '#';
+  };
+
+  // Identify top-level menu items.
+  const parentItems = this._menuItems.filter(
+    (item: IMenuItem) =>
+      !item.ParentMenu || !item.ParentMenu.Id
+  );
+
+  // Get direct children of a menu item.
+  const getChildItems = (parentId: number): IMenuItem[] => {
+
+    return this._menuItems.filter(
+      (item: IMenuItem) =>
+        !!item.ParentMenu &&
+        Number(item.ParentMenu.Id) === Number(parentId)
+    );
+  };
+
+  // Recursively render menu items and nested dropdowns.
+  const renderMenuItem = (
+    item: IMenuItem,
+    ancestorIds: number[] = [],
+    isNested: boolean = false
+  ): string => {
+
+    // Prevent infinite recursion if the list contains a circular parent reference.
+    if (ancestorIds.indexOf(item.Id) !== -1) {
+      return '';
+    }
+
+    const title = escapeHtml(getMenuTitle(item));
+    const url = escapeHtml(getMenuUrl(item));
+
+    const childItems = getChildItems(item.Id);
+
+    // Render a normal link when there are no children.
+    if (childItems.length === 0) {
+
+      return `
+        <a
+          href="${url}"
+          class="${isNested ? styles.dropdownItem : styles.navLink}">
+          ${title}
+        </a>
+      `;
+    }
+
+    // Render each child, including any further nested levels.
+    const nextAncestorIds = [...ancestorIds, item.Id];
+
+    const childMenuHtml = childItems
+      .map((child: IMenuItem) =>
+        renderMenuItem(child, nextAncestorIds, true)
+      )
+      .join('');
+
+    return `
+      <div class="${styles.dropdown}">
+
+        <a
+          href="${url}"
+          class="${isNested ? styles.dropdownItem : styles.navLink}"
+          aria-haspopup="true">
+          ${title}
+          
+        </a>
+
+        <div class="${styles.dropdownMenu}">
+          ${childMenuHtml}
+        </div>
+
+      </div>
+    `;
+  };
+
+  // Generate the complete navigation menu.
+  const menuHtml = parentItems
+    .map((item: IMenuItem) => renderMenuItem(item))
+    .join('');
+
+  this._top.domElement.innerHTML = `
+
+    <div id="bpcl-custom-navbar" class="${styles.mainNavbar}">
+
+      <div class="${styles.navbarContainer}">
+
+        <div class="${styles.logoSection}">
+          <img
+            src="${Logo}"
+            alt="MRIonnect Logo"
+            class="${styles.logoImg}" />
+        </div>
+
+        <button
+          id="bpclMenuBtn"
+          class="${styles.menuBtn}"
+          aria-label="Toggle Menu"
+          aria-expanded="false">
+          ☰
+        </button>
+
+        <div id="bpclMenu" class="${styles.navMenu}">
+
+          <div class="${styles.navLinks}">
+            ${menuHtml}
+          </div>
+
+          <div class="${styles.languageWrapper}">
+
+            <span
+              id="mrCurrentDateTime"
+              class="${styles.timestamp}">
+              ${this._getCurrentDateTime()}
+            </span>
+
+            <select
+              id="mrLanguageSelector"
+              class="${styles.languageSelect}">
+
+              <option value="English"
+                ${selectedLanguage === 'English' ? 'selected' : ''}>
+                English
+              </option>
+
+              <option value="Hindi"
+                ${selectedLanguage === 'Hindi' ? 'selected' : ''}>
+                Hindi
+              </option>
+
+              <option value="Marathi"
+                ${selectedLanguage === 'Marathi' ? 'selected' : ''}>
+                Marathi
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  `;
+
+  // Mobile menu toggle.
+  const menuBtn = document.getElementById(
+    'bpclMenuBtn'
+  ) as HTMLButtonElement | null;
+
+  const menu = document.getElementById('bpclMenu');
+
+  if (menuBtn && menu) {
+
+    menuBtn.addEventListener('click', () => {
+
+      const isOpen =
+        menu.classList.toggle('bpcl-mobile-open');
+
+      menuBtn.textContent = isOpen ? '✕' : '☰';
+
+      menuBtn.setAttribute(
+        'aria-expanded',
+        String(isOpen)
+      );
+    });
   }
 
-  private _renderBottom():
-    void {
+  // Language selector.
+  const languageSelector = document.getElementById(
+    'mrLanguageSelector'
+  ) as HTMLSelectElement | null;
 
-    if (
-      document.getElementById(
-        'bpcl-footer'
-      )
-    ) {
+  if (languageSelector) {
+
+    languageSelector.addEventListener(
+      'change',
+      async (e: Event) => {
+
+        const selectedValue =
+          (e.target as HTMLSelectElement).value;
+
+        localStorage.setItem(
+          'MRLanguage',
+          selectedValue
+        );
+
+        if (this._top) {
+          this._top.dispose();
+          this._top = undefined;
+        }
+
+        await this._renderTop();
+
+        window.dispatchEvent(
+          new CustomEvent('languageChanged')
+        );
+      }
+    );
+  }
+}
+
+
+  private _renderBottom(): void {
+
+    if (document.getElementById('bpcl-footer')) {
       return;
     }
 
-    const pageCanvas =
-      document.querySelector(
-        '#spPageCanvasContent'
-      );
+    const pageCanvas = document.querySelector(
+      '#spPageCanvasContent'
+    );
 
     if (!pageCanvas) {
       return;
     }
 
-    const year =
-      new Date()
-        .getFullYear();
+    const year = new Date().getFullYear();
 
-    const footer =
-      document.createElement(
-        'div'
-      );
+    const footer = document.createElement('div');
 
-    footer.id =
-      'bpcl-footer';
+    footer.id = 'bpcl-footer';
 
     footer.innerHTML = `
 
-<div class="${styles.footerSection}">
+      <div class="${styles.footerSection}">
 
-<div class="${styles.footerContent}">
+        <div class="${styles.footerContent}">
 
-<div class="${styles.footerLeft}">
-© ${year}
-Bharat Petroleum Corporation Limited
-</div>
+          <div class="${styles.footerLeft}">
+            © ${year}
+            Bharat Petroleum Corporation Limited
+          </div>
 
-<div class="${styles.footerRight}">
-<a href="#">Feedback</a>
-<a href="#">Help</a>
-</div>
+          <div class="${styles.footerRight}">
+            <a href="#">Feedback</a>
+            <a href="#">Help</a>
+          </div>
 
-</div>
+        </div>
 
-</div>
+      </div>
+    `;
 
-`;
-
-    pageCanvas.appendChild(
-      footer
-    );
-
+    pageCanvas.appendChild(footer);
   }
-
 }
-
