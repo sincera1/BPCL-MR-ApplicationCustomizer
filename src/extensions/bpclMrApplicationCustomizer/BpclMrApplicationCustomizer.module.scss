@@ -43,7 +43,6 @@
    NAVBAR
 ===================================== */
 .mainNavbar {
-  // background: #fcdb00;
   background: #fff;
   position: sticky;
   top: 0;
@@ -66,7 +65,7 @@
   align-items: center;
   justify-content: space-between;
   // padding: 10px 25px;
-  padding: 0 12px 0 42px;
+  padding: 0 12px 0 18px;
   gap: 20px;
   height: 41px;
 }
@@ -100,7 +99,7 @@
 
 .navLinks {
   display: flex;
-  justify-content: center;
+  // justify-content: center;
   align-items: center;
   gap: 16px;
 
@@ -293,139 +292,73 @@
     margin: 0 !important;
   }
 }
-
-/***** new css 22/101/2026 *****/
-.menuItem {
-  position: relative;
-  padding: 6px 12px;
-  color: #fff;
-  cursor: pointer;
-}
-.menuItem:nth-last-child(-n + 3) {
-  .submenu {
-    left: auto;
-    right: 0;
-  }
-}
-.menuItem.dropdown:hover > .link > .dropdownIcon {
-  transform: rotate(180deg) !important;
-}
-@media (max-width: 1366px) {
-  .menuItem {
-    padding: 6px 6x;
-    font-size: 13px;
-  }
-}
-@media (max-width: 1024px) {
-  .menuItem {
-    padding: 6px 12px;
-    position: relative;
-  }
-}
-.submenuItem {
-  padding: 0;
-  position: relative;
-}
-
-.submenuLink {
-  display: flex;
-  padding: 8px 24px;
-  white-space: nowrap;
-  color: #032492;
-  text-decoration: none;
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
-}
-
-.submenuLink i {
-  margin-left: 10px;
-  font-size: 12px;
-  margin-top: 6px;
-}
-
-.submenu li:hover > .submenuLink {
-  background: #032492;
-  border-left: 4px solid #dba300;
-  color: #fff;
-  cursor: pointer;
-}
-
-/***** End new css 22/101/2026 *****/
-
-// .dropdown {
-//   position: relative;
-//   display: inline-block;
-// }
-
-// .dropdownMenu {
-//   display: none;
-//   position: absolute;
-//   top: 100%;
-//   left: 0;
-//   min-width: 180px;
-//   background: #fff;
-//   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-//   z-index: 10000;
-// }
-
-// .dropdown:hover .dropdownMenu {
-//   display: block;
-// }
-
-// .dropdownItem {
-//   display: block;
-//   text-decoration: none;
-//   white-space: nowrap;
-
-//   color: #032492;
-//   display: flex;
-//   padding: 8px 24px;
-//   text-transform: capitalize !important;
-// }
-
-// .dropdownItem:hover {
-//   background: #032492;
-//   border-left: 4px solid #dba300;
-//   color: #fff;
-//   cursor: pointer;
-// }
-
 /* =====================================
-   MULTI-LEVEL DROPDOWN MENU
+   MULTI-LEVEL DROPDOWN / MEGA MENU
 ===================================== */
 
-
-/* Main dropdown container */
+/* Dropdown wrapper */
 .dropdown {
   position: relative;
   display: inline-block;
 }
 
-/* First-level dropdown panel */
+/* All dropdown panels are hidden by default */
 .dropdownMenu {
   display: none;
   position: absolute;
   top: 100%;
-  left: 0;
-  min-width: 220px;
+  left: -40%;
+  // right: 0;
+  // min-width: 220px;
   width: max-content;
-  max-width: 360px;
+  // max-width: 90vw;
+  max-width: 61vw;
   background: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 10000;
 }
 
-/* Open only the direct dropdown */
-.dropdown:hover > .dropdownMenu,
-.dropdown:focus-within > .dropdownMenu {
-  display: block;
+/* Top-level dropdown: 3-column mega menu */
+.navLinks > .dropdown > .dropdownMenu {
+  // width: 660px;
+  // max-width: 40vw;
+  // max-height: 70vh;
+  // overflow-y: auto;
+  // height: 410px;
+  // overflow-y: auto;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
 }
 
-/* Child dropdown rows */
+/* Open top-level mega menu */
+.navLinks > .dropdown:hover > .dropdownMenu,
+.navLinks > .dropdown:focus-within > .dropdownMenu {
+  display: grid;
+}
+
+/* Nested dropdown rows */
 .dropdownMenu > .dropdown {
   display: block;
   width: 100%;
+}
+
+/* Nested dropdown panel opens to the right and stays one column */
+.dropdownMenu > .dropdown > .dropdownMenu {
+  top: 0;
+  left: 100%;
+  width: max-content;
+  min-width: 220px;
+  max-width: 360px;
+  max-height: 70vh;
+  overflow-y: auto;
+  grid-template-columns: 1fr;
+  border-top: 0;
+}
+
+/* Open nested dropdowns */
+.dropdownMenu > .dropdown:hover > .dropdownMenu,
+.dropdownMenu > .dropdown:focus-within > .dropdownMenu {
+  display: block;
 }
 
 /* Links inside dropdowns */
@@ -435,30 +368,37 @@
   justify-content: space-between;
   width: 100%;
   box-sizing: border-box;
-  padding: 10px 16px;
+  padding: 10px 14px;
   color: #032492;
   background: #fff;
   text-decoration: none;
   white-space: normal;
+  font-size: 13px;
 }
 
-/* Hover styling */
+/* Dropdown link hover */
 .dropdownMenu .dropdownItem:hover {
   background: #032492;
   border-left: 4px solid #dba300;
   color: #fff;
 }
 
-/* Nested submenu opens to the right */
-.dropdownMenu > .dropdown > .dropdownMenu {
-  top: 0;
-  left: 100%;
-  width: max-content;
-  min-width: 220px;
-  margin: 0;
+/* Arrow on top-level items that have children */
+.navLinks > .dropdown > .navLink::after {
+  content: "▼";
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 9px;
+  vertical-align: middle;
+  transition: transform 0.2s ease;
 }
 
-/* Arrow for items that have children */
+/* Rotate top-level arrow on hover */
+.navLinks > .dropdown:hover > .navLink::after {
+  transform: rotate(180deg);
+}
+
+/* Right-facing arrow on nested items that have children */
 .dropdownMenu > .dropdown > .dropdownItem::after {
   content: "›";
   margin-left: 16px;
@@ -470,45 +410,76 @@
   white-space: nowrap;
 }
 
-
 /* =====================================
    MOBILE DROPDOWN ADJUSTMENTS
 ===================================== */
 
 @media (max-width: 991px) {
-
   .navLinks > .dropdown {
     display: block;
     width: 100%;
   }
 
-  .dropdown > .dropdownMenu {
+  /* Mobile dropdowns stack in one column */
+  .navLinks > .dropdown > .dropdownMenu {
     position: static;
     display: none;
     width: 100%;
+    max-width: 100%;
     min-width: 0;
+    max-height: 50vh;
+    overflow-y: auto;
+    grid-template-columns: 1fr;
     box-shadow: none;
-    background: #fff;
+    border-top: 0;
     padding-left: 12px;
   }
 
-  /* Nested submenus remain in the mobile menu flow */
+  /* Do not open menus on hover on touch-sized layouts */
+  .navLinks > .dropdown:hover > .dropdownMenu {
+    display: none;
+  }
+
+  .navLinks > .dropdown:focus-within > .dropdownMenu {
+    display: grid;
+  }
+
+  /* Nested mobile menus remain in document flow */
   .dropdownMenu > .dropdown > .dropdownMenu {
     position: static;
     left: auto;
     top: auto;
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    max-height: 40vh;
+    overflow-y: auto;
     padding-left: 12px;
     box-shadow: none;
   }
 
-  /* Avoid hover opening every nested level on touch devices */
-  .dropdown:hover > .dropdownMenu {
+  .dropdownMenu > .dropdown:hover > .dropdownMenu {
     display: none;
   }
 
-  .dropdown:focus-within > .dropdownMenu {
+  .dropdownMenu > .dropdown:focus-within > .dropdownMenu {
     display: block;
   }
+}
 
+/* =====================================
+   OPEN LAST 2 TOP-LEVEL MENUS TO THE LEFT
+===================================== */
+/* Main dropdown of the last 2 navbar items */
+.navLinks > .dropdown:nth-last-child(-n + 2) > .dropdownMenu {
+  left: auto;
+  right: 0;
+}
+
+/* Keep mobile dropdowns unchanged */
+@media (max-width: 991px) {
+  .navLinks > .dropdown:nth-last-child(-n + 2) > .dropdownMenu {
+    left: auto;
+    right: auto;
+  }
 }
